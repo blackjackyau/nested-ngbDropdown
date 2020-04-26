@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+  <a class="navbar-brand" href="#">Nested NgbDropdown</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-left">
+      <!-- https://www.bennadel.com/blog/3512-playing-with-recursive-ng-template-references-in-angular-6-1-10.htm -->
+      <ng-template #nodeTemplateRef let-node="node">
+
+        <li #dd="ngbDropdown" class="dropdown-submenu" ngbDropdown [autoClose]="'outside'">
+          <a *ngIf="node.link" class="dropdown-item" [routerLink]="['/page', node.link]" (click)="actionClick()">
+            {{ node.label }} </a>
+          <a *ngIf="node.children" class="dropdown-item" ngbDropdownToggle> {{ node.label }}
+          </a>
+          <ul *ngIf="node.children" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" ngbDropdownMenu>
+            <ng-template ngFor [ngForOf]="node.children" let-child>
+              <ng-template [ngTemplateOutlet]="nodeTemplateRef" [ngTemplateOutletContext]="{ node: child }">
+              </ng-template>
+            </ng-template>
+          </ul>
+        </li>
+
+      </ng-template>
+
+      <li #dd="ngbDropdown" class="nav-item dropdown" ngbDropdown [autoClose]="'outside'">
+        <a class="nav-link" href="javascript:void(0)" ngbDropdownToggle>
+          Country
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" ngbDropdownMenu>
+          <ng-template ngFor [ngForOf]="nestedMenu.root" let-child>
+            <ng-template [ngTemplateOutlet]="nodeTemplateRef" [ngTemplateOutletContext]="{ node: child }">
+            </ng-template>
+          </ng-template>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<section class="main-container">
+  <router-outlet></router-outlet>
+</section>
